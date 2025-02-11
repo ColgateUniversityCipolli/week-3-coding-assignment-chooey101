@@ -47,13 +47,56 @@ Blake made.\\
 to this \texttt{.Rnw} file.\\
 \textbf{Hint:} You may find the \verb|%in%| operator and the \verb|setdiff()| function to be helpful.\\
 
-\textbf{Solution:} 
-% Write your answer and explanations here.
+\textbf{Solution:} The incorrect number contained within the table is 75, and should be replaced with the number 74. To come to this conclusion, I first established a vector with the numbers listed above. After such, I created an empty dataframe that would list each number and their respective factors, and filled it with data by creating a function which would output all prime factors for a given value. I then called this function within a loop to determine the factors of each number, and after observing all sets of factors came to the conclusion that 75 was the only listed number which had more than two prime factors. Assuming this was the incorrect number, I instead checked values around 75 to find that 74 had two prime factors that had not appeared within the dataframe previously. Following such, I removed the incorrect values of 75 and its factors, and replaced them with the correct values from 74.
+
 
 <<size="scriptsize", warning=F, message=F>>=
-# Copy your solution code here.
+
+numbers <- c(6, 10, 14, 15, 21, #establishes a vector containing the numbers referenced within the problem
+             22, 26, 33, 34, 35, 
+             38, 39, 46, 51, 55, 
+             57, 58, 62, 65, 69, 
+             75, 77, 82, 85, 86, 
+             87, 91, 93, 94, 95)
+factors_df <- data.frame(Number = numeric(), #stores prime factors
+                 factor_1 = numeric(), 
+                 factor_2 = numeric(),
+                 factor_3 = numeric (),
+                 stringsAsFactors=FALSE) 
+
+prime_factors_Loop <- function(x) { #outputs prime factors of x
+  factors_for_x <- c()   # Vector that will store factors for the value of x
+  i <- 2           # Start checking factors beginning two
+  
+  while (x >= i) {  # Continue looping while x is greater than or equal to i
+    if (x %% i == 0) {   # If i is a factor of x 
+    factors_for_x <- c(factors_for_x, i)  # Add i to the list of factors
+      x <- x / i  # Divide x by i to remove that factor
+    } else {
+      i <- i + 1  #if i is not a factor, move to the next number
+    }
+  }
+ return(factors_for_x) #returns the vector containing the prime factors for x
+}
+for(j in 1:length(numbers)){#loop that stores each number and their respective factors in factors_df 
+  x = numbers[j]
+  factors_for_x <- prime_factors_Loop(x)
+new_row <- data.frame(Number = numbers[j],
+                      factor_1 = factors_for_x[1],
+                      factor_2 = factors_for_x[2],
+                      factor_3 = factors_for_x[3],
+                      stringsAsFactors = FALSE)
+
+factors_df <- rbind(factors_df, new_row)  #data frame containing each number within the vector and their prime factors
+}
+#After examining data frame, 75 is the only number with more than two factors, and therefore is the incorrect number
+factors_for_74 <- prime_factors_Loop(74) #Runs the loop to check factors for 74 instead, which has 2 prime factors
+#After examining the dataframe, we've observed 75's position as 21
+factors_df$Number[21] <- 74 #replaces 75 with the correct number, 74
+factors_df$factor_1[21] <- factors_for_74[1] #Replaces factor 1 for 74
+factors_df$factor_2[21] <- factors_for_74[2] #Replaces factor 2 for 74
+factors_df$factor_3[21] <- NA #Eliminates factor 3 as no numbers have more than two factors
 @
 \end{enumerate}
-
 \bibliography{bibliography}
 \end{document}
